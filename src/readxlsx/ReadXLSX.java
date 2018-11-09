@@ -4,15 +4,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
 public class ReadXLSX {
     
+    public static CurrencyWriter cw = new CurrencyWriter();
     public static Integer line = 2;
-    public static String path = "D:\\Cutrale\\0.Wheslley\\Archives\\2Real_safra\\";
-    public static String archiveRead = "2Real_safra.xls";
+    public static String path = "D:\\Cutrale\\0.Wheslley\\Archives\\08112018\\Real_Safra\\";
+    public static String archiveRead = "Real_Safra.xls";
     public static String subNameArchive = "REAL_SAFRA";
     
     public static void main(String[] args) throws IOException, BiffException {
@@ -23,7 +25,7 @@ public class ReadXLSX {
 
         Sheet sheet = workbook.getSheet(0);
         int linhas = sheet.getRows();
-                
+
         String nameArchive = null;
         String nameArchiveOld = null;
         String key = null;
@@ -38,7 +40,7 @@ public class ReadXLSX {
             } else {
                 nameArchive = getNameArchive(sheet, i);
             }
-                        
+
             if (!sheet.getCell(0, i).getContents().equalsIgnoreCase(key)) {
                 generateTxt(nameArchiveOld, subNameArchive, data);
                 key = null;
@@ -61,10 +63,14 @@ public class ReadXLSX {
     }
 
     public static String lineXlx(Sheet sheet, Integer i) {
-        
+
         System.out.println("Linha: " + line);
         line++;
         
+        if(sheet.getCell(0, i).getContents().replaceAll("%", "").equals("")){
+            return "";
+        }
+
         return sheet.getCell(0, i).getContents().replaceAll("%", "") + ";"
                 + sheet.getCell(1, i).getContents().replaceAll("%", "") + ";"
                 + sheet.getCell(2, i).getContents().replaceAll("%", "") + ";"
@@ -73,11 +79,7 @@ public class ReadXLSX {
                 + sheet.getCell(5, i).getContents().replaceAll("%", "") + ";"
                 + sheet.getCell(6, i).getContents().replaceAll("%", "") + ";"
                 + sheet.getCell(7, i).getContents().replaceAll("%", "") + ";"
-                + sheet.getCell(8, i).getContents().replaceAll("%", "") + ";"
-                + sheet.getCell(9, i).getContents().replaceAll("%", "") + ";"
-                + sheet.getCell(10, i).getContents().replaceAll("%", "") + ";"
-                + sheet.getCell(11, i).getContents().replaceAll("%", "") + ";"
-                + sheet.getCell(12, i).getContents().replaceAll("%", "") + ";\r\n";
+                + cw.write(new BigDecimal(sheet.getCell(7, i).getContents().replaceAll("%", ""))) + ";\r\n";
 
     }
 
